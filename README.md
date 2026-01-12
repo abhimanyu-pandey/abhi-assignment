@@ -1,327 +1,86 @@
 # Product Order Management System
 
-A complete Spring Boot 3 REST API for managing products, orders, and users with JWT authentication, role-based access control, and dynamic discount calculation using the Strategy design pattern.
+A Spring Boot 3.2.1 e-commerce backend system with JWT authentication, order management, and dynamic discount strategies.
 
-## 🎯 Features
+## 🚀 Tech Stack
 
-### Core Functionality
-- **Product Management**: CRUD operations for products with inventory tracking and soft delete
-- **User Management**: User registration, authentication, and role-based access (USER, PREMIUM_USER, ADMIN)
-- **Order Management**: Place orders, view order history, update order status
-- **JWT Authentication**: Stateless authentication with Bearer tokens
-- **Dynamic Discounts**: Strategy pattern implementation
-  - Premium users: 10% discount
-  - Bulk orders (>$500): 5% discount
-  - Discounts are combinable
+- **Java 17** | **Spring Boot 3.2.1** | **Maven**
+- **Spring Security** (JWT) | **Spring Data JPA** | **Hibernate**
+- **H2** (dev) / **PostgreSQL** (prod) | **Flyway**
+- **Redis** (caching) | **Docker** | **JUnit 5**
 
-### Technical Features
-- **Spring Boot 3.2.1** with Java 17
-- **Spring Security** with JWT
-- **Spring Data JPA** with Hibernate
-- **Flyway** database migrations
-- **Redis** caching for improved performance
-- **OpenAPI/Swagger** documentation
-- **Docker** containerization
-- **Comprehensive unit & integration tests**
-- **Global exception handling**
-- **Request validation**
-- **Pagination & sorting**
+## 📋 Key Features
 
-## 📋 Prerequisites
+- JWT authentication with role-based access (USER, PREMIUM_USER, ADMIN)
+- Product catalog with soft delete and stock management
+- Order processing with inventory validation
+- **Strategy Pattern** for discount calculation (Premium: 10%, Bulk: 5% >$500)
+- RESTful API with OpenAPI documentation
 
-- Java 17 or higher
-- Maven 3.6+
-- Docker & Docker Compose (optional)
-- PostgreSQL 15+ (for production)
-- Redis 7+ (optional, for caching)
+## 🛠️ Quick Start
 
-## 🚀 Quick Start
-
-### 1. Clone the Repository
+### Run Locally (H2)
 ```bash
-git clone <repository-url>
-cd abhi-assignment
+mvn clean install
+mvn spring-boot:run
 ```
 
-### 2. Run with Maven (H2 Database)
-```bash
-./mvnw spring-boot:run
-```
-
-The application will start on `http://localhost:8080`
-
-### 3. Run with Docker
+### Run with Docker (PostgreSQL + Redis)
 ```bash
 docker-compose up -d
+```
+
+**Access**:
+- API: http://localhost:8080
+- Swagger: http://localhost:8080/swagger-ui.html
+- H2 Console: http://localhost:8080/h2-console (JDBC: `jdbc:h2:mem:productorderdb`, User: `sa`)
+
+## 📡 API Endpoints
+
+**Auth**: `POST /api/auth/register`, `POST /api/auth/login`
+
+**Products**: `GET /api/products`, `POST /api/products` (Admin), `PUT /api/products/{id}` (Admin)
+
+**Orders**: `POST /api/orders`, `GET /api/orders`, `GET /api/orders/{id}`
+
+**Users**: `GET /api/users` (Admin), `PUT /api/users/{id}/role` (Admin)
+
+## 🧪 Sample Users
+
+- **Admin**: `admin` / `admin123`
+- **Premium**: `premium_user` / `premium123`
+- **User**: `john_doe` / `password123`
+
+## 🧪 Testing
+
+```bash
+mvn test
+```
+
+Import `Product-Order-Management-API.postman_collection.json` for API testing.
+
+## 📁 Project Structure
+
+```
+src/main/java/com/ecommerce/
+├── config/          # Security, OpenAPI, Cache
+├── controller/      # REST endpoints
+├── dto/             # Request/Response objects
+├── exception/       # Custom exceptions + handler
+├── model/           # Entities & enums
+├── repository/      # JPA repositories
+├── security/        # JWT provider & filter
+└── service/         # Business logic + discount strategies
 ```
 
 ## 🔧 Configuration
 
-### Application Profiles
-
-#### Development Profile (default)
-- Uses H2 in-memory database
-- H2 Console: `http://localhost:8080/h2-console`
-- Debug logging enabled
-
-#### Production Profile
-- Uses PostgreSQL database
-- Redis caching enabled
-- JSON logging format
-
-### Environment Variables
+**Profiles**: `dev` (H2) | `prod` (PostgreSQL + Redis)
 
 ```bash
-# Database
-DB_USERNAME=postgres
-DB_PASSWORD=postgres
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
+mvn spring-boot:run -Dspring-boot.run.profiles=prod
 ```
-
-## 📚 API Documentation
-
-### Swagger UI
-Access interactive API documentation at:
-```
-http://localhost:8080/swagger-ui.html
-```
-
-### OpenAPI Specification
-```
-http://localhost:8080/v3/api-docs
-```
-
-## 🔐 Test Users
-
-The application comes with pre-loaded test users:
-
-| Username | Password | Role | Description |
-|----------|----------|------|-------------|
-| `admin` | `password123` | ADMIN | Full access to all endpoints |
-| `john_premium` | `password123` | PREMIUM_USER | Gets 10% discount on all orders |
-| `jane_doe` | `password123` | USER | Regular user, no discount |
-
-## 📖 API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login and get JWT token
-
-### Products (Public Read, Admin Write)
-- `GET /api/products` - Get all products (paginated)
-- `GET /api/products/{id}` - Get product by ID
-- `GET /api/products/search` - Search products with filters
-- `POST /api/products` - Create product (Admin only)
-- `PUT /api/products/{id}` - Update product (Admin only)
-- `DELETE /api/products/{id}` - Delete product (Admin only)
-
-### Orders (Authenticated)
-- `POST /api/orders` - Place new order
-- `GET /api/orders/{id}` - Get order by ID
-- `GET /api/orders/my-orders` - Get current user's orders
-- `GET /api/orders` - Get all orders (Admin only)
-- `PATCH /api/orders/{id}/status` - Update order status (Admin only)
-
-### Users (Admin Only)
-- `GET /api/users` - Get all users
-- `GET /api/users/{id}` - Get user by ID
-
-### Health & Monitoring
-- `GET /actuator/health` - Health check
-- `GET /actuator/info` - Application info
-- `GET /actuator/metrics` - Metrics
-
-## 🧪 Testing
-
-### Run All Tests
-```bash
-./mvnw test
-```
-
-### Run Specific Test Class
-```bash
-./mvnw test -Dtest=ProductServiceTest
-```
-
-### Test Coverage
-- Unit tests for services and discount strategies
-- Integration tests for controllers
-- 80%+ code coverage
-
-## 🏗️ Architecture
-
-### Project Structure
-```
-src/
-├── main/
-│   ├── java/com/ecommerce/
-│   │   ├── config/              # Configuration classes
-│   │   ├── controller/          # REST controllers
-│   │   ├── dto/                 # Data Transfer Objects
-│   │   ├── exception/           # Custom exceptions & handler
-│   │   ├── model/               # Entities & enums
-│   │   ├── repository/          # JPA repositories
-│   │   ├── security/            # JWT & security
-│   │   └── service/             # Business logic
-│   │       └── discount/        # Strategy pattern
-│   └── resources/
-│       ├── db/migration/        # Flyway migrations
-│       ├── application.yml      # Configuration
-│       └── logback-spring.xml   # Logging config
-└── test/                        # Unit & integration tests
-```
-
-### Design Patterns
-1. **Strategy Pattern** - Discount calculation
-2. **Repository Pattern** - Data access abstraction
-3. **DTO Pattern** - Request/Response separation
-4. **Builder Pattern** - Entity construction (Lombok)
-5. **Singleton** - Spring Beans
-6. **Factory** - JWT token generation
-7. **Chain of Responsibility** - Security filter chain
-
-### Key Design Decisions
-
-#### 1. Strategy Pattern for Discounts
-- **Why**: Flexible and extensible discount system
-- **Benefits**: 
-  - Easy to add new discount types
-  - Discounts can be combined
-  - Follows Open/Closed Principle
-
-#### 2. Soft Delete for Products
-- **Why**: Preserve order history and data integrity
-- **Implementation**: Boolean flag + @SQLDelete annotation
-- **Benefits**: Orders reference correct product data even after "deletion"
-
-#### 3. JWT Stateless Authentication
-- **Why**: Scalability and microservices-ready
-- **Benefits**: 
-  - No server-side session storage
-  - Easy horizontal scaling
-  - Suitable for distributed systems
-
-#### 4. Redis Caching
-- **Why**: Performance optimization
-- **Implementation**: Product catalog caching
-- **Benefits**: Reduced database load, faster response times
-
-## 🐳 Docker Deployment
-
-### Build and Run
-```bash
-docker-compose up -d
-```
-
-### View Logs
-```bash
-docker-compose logs -f app
-```
-
-### Stop Services
-```bash
-docker-compose down
-```
-
-## 📊 Database Schema
-
-### Tables
-- `users` - User accounts with roles
-- `products` - Product catalog with soft delete
-- `orders` - Order headers with totals
-- `order_items` - Order line items
-
-### Relationships
-- User → Order (One-to-Many)
-- Order → OrderItem (One-to-Many)
-- Product → OrderItem (One-to-Many)
-
-## 🔍 Example API Usage
-
-### 1. Register User
-```bash
-curl -X POST http://localhost:8080/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "newuser",
-    "email": "newuser@example.com",
-    "password": "password123",
-    "fullName": "New User"
-  }'
-```
-
-### 2. Login
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "john_premium",
-    "password": "password123"
-  }'
-```
-
-### 3. Place Order (with Token)
-```bash
-curl -X POST http://localhost:8080/api/orders \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "items": [
-      {"productId": 1, "quantity": 2},
-      {"productId": 3, "quantity": 1}
-    ]
-  }'
-```
-
-## 🛠️ Development
-
-### Build Project
-```bash
-./mvnw clean package
-```
-
-### Run with Specific Profile
-```bash
-./mvnw spring-boot:run -Dspring-boot.run.profiles=prod
-```
-
-### Generate Documentation
-```bash
-./mvnw javadoc:javadoc
-```
-
-## 📈 Performance
-
-- Redis caching reduces database queries by ~60%
-- Pagination prevents memory issues with large datasets
-- Lazy loading optimizes entity relationships
-- Connection pooling (HikariCP) for database efficiency
-
-## 🔒 Security
-
-- BCrypt password encryption
-- JWT with HMAC-SHA256 signing
-- Role-based access control (RBAC)
-- CSRF protection disabled (stateless API)
-- Security headers configured
-- Input validation on all endpoints
-
-## 📝 License
-
-This project is created for interview demonstration purposes.
 
 ## 👤 Author
 
-Backend Developer Interview Assignment
-
-## 🤝 Contributing
-
-This is an interview assignment project. For questions or suggestions, please contact the author.
-
----
-
-**Built with ❤️ using Spring Boot 3 and Java 17**
-Create Same Project as assignment
+**Abhimanyu Pandey** | [@pabhimanyu24](https://github.com/pabhimanyu24)
