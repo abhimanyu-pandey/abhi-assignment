@@ -74,7 +74,6 @@ public class OrderService {
 
             orderItems.add(orderItem);
 
-            // Decrease stock
             product.setStockQuantity(product.getStockQuantity() - itemRequest.getQuantity());
             productRepository.save(product);
         }

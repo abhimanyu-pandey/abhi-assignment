@@ -62,9 +62,6 @@ class DiscountCalculatorServiceTest {
 
         BigDecimal discount = discountCalculatorService.calculateTotalDiscount(amount, user);
 
-        // Premium user: 10% = 100
-        // Bulk order: 5% = 50
-        // Total = 150
         assertThat(discount).isEqualByComparingTo(new BigDecimal("150.00"));
     }
 

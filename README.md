@@ -1,85 +1,51 @@
 # Product Order Management System
 
-A Spring Boot 3.2.1 e-commerce backend system with JWT authentication, order management, and dynamic discount strategies.
+Spring Boot REST API for managing products and orders with JWT authentication.
 
-## 🚀 Tech Stack
+## Tech Stack
 
-- **Java 17** | **Spring Boot 3.2.1** | **Maven**
-- **Spring Security** (JWT) | **Spring Data JPA** | **Hibernate**
-- **H2** (dev) / **PostgreSQL** (prod) | **Flyway**
-- **Redis** (caching) | **Docker** | **JUnit 5**
+- Java 17
+- Spring Boot 3.2.1
+- Spring Security (JWT)
+- Spring Data JPA
+- H2 Database
+- Maven
 
-## 📋 Key Features
+## Features
 
-- JWT authentication with role-based access (USER, PREMIUM_USER, ADMIN)
-- Product catalog with soft delete and stock management
-- Order processing with inventory validation
-- **Strategy Pattern** for discount calculation (Premium: 10%, Bulk: 5% >$500)
-- RESTful API with OpenAPI documentation
+- User authentication with JWT tokens
+- Role-based access control (USER, PREMIUM_USER, ADMIN)
+- Product management with inventory tracking
+- Order processing with discount calculations
+- RESTful API design
 
-## 🛠️ Quick Start
+## Running the Application
 
-### Run Locally (H2)
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
 
-### Run with Docker (PostgreSQL + Redis)
-```bash
-docker-compose up -d
-```
+The application will start on `http://localhost:8080`
 
-**Access**:
-- API: http://localhost:8080
-- Swagger: http://localhost:8080/swagger-ui.html
-- H2 Console: http://localhost:8080/h2-console (JDBC: `jdbc:h2:mem:productorderdb`, User: `sa`)
+## API Documentation
 
-## 📡 API Endpoints
+Swagger UI available at: `http://localhost:8080/swagger-ui.html`
 
-**Auth**: `POST /api/auth/register`, `POST /api/auth/login`
+## Database
 
-**Products**: `GET /api/products`, `POST /api/products` (Admin), `PUT /api/products/{id}` (Admin)
+H2 in-memory database. Console available at `http://localhost:8080/h2-console`
+- JDBC URL: `jdbc:h2:mem:productorderdb`
+- Username: `sa`
+- Password: (empty)
 
-**Orders**: `POST /api/orders`, `GET /api/orders`, `GET /api/orders/{id}`
+## Test Users
 
-**Users**: `GET /api/users` (Admin), `PUT /api/users/{id}/role` (Admin)
-
-## 🧪 Sample Users
-
-- **Admin**: `admin` / `admin123`
-- **Premium**: `premium_user` / `premium123`
-- **User**: `john_doe` / `password123`
-
-## 🧪 Testing
-
-```bash
-mvn test
-```
-
-Import `Product-Order-Management-API.postman_collection.json` for API testing.
-
-## 📁 Project Structure
-
-```
-src/main/java/com/ecommerce/
-├── config/          # Security, OpenAPI, Cache
-├── controller/      # REST endpoints
-├── dto/             # Request/Response objects
-├── exception/       # Custom exceptions + handler
-├── model/           # Entities & enums
-├── repository/      # JPA repositories
-├── security/        # JWT provider & filter
-└── service/         # Business logic + discount strategies
-```
-
-## 🔧 Configuration
-
-**Profiles**: `dev` (H2) | `prod` (PostgreSQL + Redis)
-
-```bash
-mvn spring-boot:run -Dspring-boot.run.profiles=prod
-```
+| Username | Password | Role |
+|----------|----------|------|
+| admin | admin123 | ADMIN |
+| premium_user | premium123 | PREMIUM_USER |
+| john_doe | password123 | USER |
 
 ## 👤 Author
 
